@@ -1,0 +1,157 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <h1 style="margin:2rem 0">🔒 結賬</h1>
+
+  <form action="/checkout/place" method="post" class="checkout-grid">
+    <div>
+      <!-- Address -->
+      <div class="checkout-section">
+        <h3>📍 送貨地址</h3>
+
+        <% if (addresses.length > 0) { %>
+          <% addresses.forEach(addr => { %>
+            <label class="shipping-option">
+              <input type="radio" name="address_id" value="<%= addr.id %>" <%= addr.is_default ? 'checked' : '' %>>
+              <div style="flex:1">
+                <div style="font-weight:600"><%= addr.recipient %> <%= addr.phone %></div>
+                <div style="font-size:0.875rem;color:var(--gray-500)">
+                  <%= addr.district %> - <%= addr.address %>
+                </div>
+              </div>
+            </label>
+          <% }) %>
+          <p style="margin-top:1rem"><a href="#" onclick="document.getElementById('newAddress').style.display='block';return false">+ 使用新地址</a></p>
+        <% } %>
+
+        <div id="newAddress" style="<%= addresses.length > 0 ? 'display:none' : '' %>; margin-top:1rem">
+          <div class="form-group">
+            <label>收件人姓名 *</label>
+            <input type="text" name="new_address_recipient" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>聯絡電話 *</label>
+            <input type="tel" name="new_address_phone" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>地區 *</label>
+            <select name="new_address_district" class="form-control" required>
+              <option value="">請選擇</option>
+              <option>香港島</option>
+              <option>九龍</option>
+              <option>新界</option>
+              <option>離島</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>詳細地址 *</label>
+            <textarea name="new_address_address" class="form-control" required></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping -->
+      <div class="checkout-section">
+        <h3>🚚 送貨方式</h3>
+        <% zones.forEach((zone, i) => { %>
+          <label class="shipping-option">
+            <input type="radio" name="shipping_zone_id" value="<%= zone.id %>" <%= i === 0 ? 'checked' : '' %>>
+            <div style="flex:1">
+              <div style="font-weight:600"><%= zone.name %></div>
+              <div style="font-size:0.875rem;color:var(--gray-500)">
+                <%= zone.estimated_days || '2-3 個工作天' %>
+                <% if (zone.free_threshold > 0) { %>
+                  · 滿 <%= store.currency %><%= zone.free_threshold %> 免費送貨
+                <% } %>
+              </div>
+            </div>
+            <div style="font-weight:700;color:var(--bear-red)">
+              <% if (zone.free_threshold > 0 && cart.subtotal >= zone.free_threshold) { %>
+                <span style="text-decoration:line-through;color:var(--gray-500)"><%= store.currency %><%= zone.fee.toFixed(2) %></span>
+                免費
+              <% } else { %>
+                <%= store.currency %><%= zone.fee.toFixed(2) %>
+              <% } %>
+            </div>
+          </label>
+        <% }) %>
+      </div>
+
+      <!-- Payment -->
+      <div class="checkout-section">
+        <h3>💳 付款方式</h3>
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="cod" checked>
+          <div style="flex:1">
+            <div style="font-weight:600">💵 貨到付款 (COD)</div>
+            <div style="font-size:0.875rem;color:var(--gray-500)">收到貨品先付款</div>
+          </div>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="stripe">
+          <div style="flex:1">
+            <div style="font-weight:600">💳 信用卡付款 (Stripe)</div>
+            <div style="font-size:0.875rem;color:var(--gray-500)">Visa / Master / AMEX</div>
+          </div>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="bank">
+          <div style="flex:1">
+            <div style="font-weight:600">🏦 銀行轉帳</div>
+            <div style="font-size:0.875rem;color:var(--gray-500)">FPS / 銀行入數</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Notes -->
+      <div class="checkout-section">
+        <h3>📝 訂單備註</h3>
+        <textarea name="notes" class="form-control" placeholder="有任何特別要求請填寫"></textarea>
+      </div>
+    </div>
+
+    <div>
+      <div class="cart-summary" style="position:sticky;top:80px">
+        <h3 style="margin-bottom:1rem">📋 訂單摘要</h3>
+        <% cart.items.forEach(item => { %>
+          <div style="display:flex;justify-content:space-between;padding:0.5rem 0;font-size:0.875rem">
+            <span><%= item.name %> × <%= item.qty %></span>
+            <span><%= store.currency %><%= item.subtotal.toFixed(2) %></span>
+          </div>
+        <% }) %>
+        <div class="row">
+          <span>小計</span>
+          <span><%= store.currency %><%= calc.subtotal.toFixed(2) %></span>
+        </div>
+        <% if (calc.discount > 0) { %>
+          <div class="row" style="color:var(--bear-green)">
+            <span>優惠折扣</span>
+            <span>- <%= store.currency %><%= calc.discount.toFixed(2) %></span>
+          </div>
+        <% } %>
+        <div class="row">
+          <span>運費</span>
+          <span>
+            <% if (calc.shippingFee === 0) { %>
+              <span style="color:var(--bear-green);font-weight:700">免費</span>
+            <% } else { %>
+              <%= store.currency %><%= calc.shippingFee.toFixed(2) %>
+            <% } %>
+          </span>
+        </div>
+        <div class="row total">
+          <span>總額</span>
+          <span><%= store.currency %><%= calc.total.toFixed(2) %></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:1rem">
+          ✓ 確認落單
+        </button>
+        <p style="margin-top:0.75rem;font-size:0.75rem;color:var(--gray-500);text-align:center">
+          🔒 您的資料將被加密保護
+        </p>
+      </div>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

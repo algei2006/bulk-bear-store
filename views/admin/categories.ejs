@@ -1,0 +1,43 @@
+<%- include('layout') %>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <h1>📚 分類管理</h1>
+  <button onclick="document.getElementById('newCat').style.display='block'" class="btn btn-primary">+ 新增分類</button>
+</div>
+
+<div id="newCat" style="display:none;background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:1.5rem">
+  <h3>新增分類</h3>
+  <form action="/admin/categories" method="post" style="display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap">
+    <input type="text" name="name" placeholder="分類名稱" class="form-control" required style="flex:1;min-width:150px">
+    <input type="text" name="slug" placeholder="url-slug" class="form-control" required style="flex:1;min-width:150px">
+    <input type="number" name="sort_order" placeholder="排序" class="form-control" value="0" style="width:80px">
+    <button type="submit" class="btn btn-primary">新增</button>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>名稱</th><th>Slug</th><th>排序</th><th>狀態</th><th></th></tr></thead>
+    <tbody>
+      <% categories.forEach(c => { %>
+        <tr>
+          <td><strong><%= c.name %></strong></td>
+          <td><code><%= c.slug %></code></td>
+          <td><%= c.sort_order %></td>
+          <td>
+            <span class="status status-<%= c.active ? 'completed' : 'cancelled' %>">
+              <%= c.active ? '啟用' : '停用' %>
+            </span>
+          </td>
+          <td>
+            <form action="/admin/categories/<%= c.id %>/delete" method="post" onsubmit="return confirm('刪除？')">
+              <button class="btn btn-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem;color:var(--bear-red)">刪除</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+</main></div></body></html>

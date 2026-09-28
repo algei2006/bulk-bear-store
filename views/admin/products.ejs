@@ -1,0 +1,41 @@
+<%- include('layout') %>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <h1>🛍️ 產品管理</h1>
+  <a href="/admin/products/new" class="btn btn-primary">+ 新增產品</a>
+</div>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr><th>SKU</th><th>名稱</th><th>分類</th><th>價格</th><th>批發價</th><th>庫存</th><th>狀態</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% products.forEach(p => { %>
+        <tr>
+          <td><code><%= p.sku %></code></td>
+          <td><strong><%= p.name %></strong></td>
+          <td><%= p.category_name || '-' %></td>
+          <td><%= store.currency %><%= p.price.toFixed(2) %></td>
+          <td><%= p.wholesale_price ? store.currency + p.wholesale_price.toFixed(2) : '-' %></td>
+          <td><%= p.stock %></td>
+          <td>
+            <% if (p.active) { %>
+              <span class="status status-completed">上架</span>
+            <% } else { %>
+              <span class="status status-cancelled">下架</span>
+            <% } %>
+          </td>
+          <td style="display:flex;gap:0.25rem">
+            <a href="/admin/products/<%= p.id %>/edit" class="btn btn-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem">編輯</a>
+            <form action="/admin/products/<%= p.id %>/delete" method="post" onsubmit="return confirm('確定刪除？')">
+              <button type="submit" class="btn btn-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem;color:var(--bear-red)">刪除</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+</main></div></body></html>

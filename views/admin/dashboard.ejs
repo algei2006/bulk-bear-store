@@ -1,0 +1,49 @@
+<%- include('layout') %>
+
+<h1 style="margin-bottom:1.5rem">📊 儀表板</h1>
+
+<div class="stat-grid">
+  <div class="stat-card red">
+    <div class="label">總訂單</div>
+    <div class="value"><%= stats.totalOrders %></div>
+  </div>
+  <div class="stat-card blue">
+    <div class="label">總營收</div>
+    <div class="value"><%= store.currency %><%= stats.totalRevenue.toFixed(0) %></div>
+  </div>
+  <div class="stat-card">
+    <div class="label">產品數</div>
+    <div class="value"><%= stats.totalProducts %></div>
+  </div>
+  <div class="stat-card green">
+    <div class="label">會員數</div>
+    <div class="value"><%= stats.totalUsers %></div>
+  </div>
+  <div class="stat-card">
+    <div class="label">待處理訂單</div>
+    <div class="value" style="color:var(--bear-red)"><%= stats.pendingOrders %></div>
+  </div>
+</div>
+
+<h2 style="margin:2rem 0 1rem">📦 最近訂單</h2>
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr><th>訂單編號</th><th>客戶</th><th>金額</th><th>狀態</th><th>日期</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% recentOrders.forEach(order => { %>
+        <tr>
+          <td><strong><%= order.order_no %></strong></td>
+          <td><%= order.user_name %><br><span style="font-size:0.75rem;color:var(--gray-500)"><%= order.email %></span></td>
+          <td><%= store.currency %><%= order.total.toFixed(2) %></td>
+          <td><span class="status status-<%= order.status %>"><%= order.status %></span></td>
+          <td><%= new Date(order.created_at).toLocaleDateString('zh-HK') %></td>
+          <td><a href="/admin/orders/<%= order.id %>" class="btn btn-outline" style="padding:0.25rem 0.75rem;font-size:0.75rem">查看</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+</main></div></body></html>

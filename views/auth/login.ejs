@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+
+<div class="auth-page">
+  <img src="/images/logo.jpg" alt="批發熊" style="width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;display:block">
+  <h1>👋 歡迎返嚟！</h1>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
+
+  <form action="/auth/login" method="post">
+    <input type="hidden" name="redirect" value="<%= redirect %>">
+    <div class="form-group">
+      <label>電郵</label>
+      <input type="email" name="email" class="form-control" required autofocus>
+    </div>
+    <div class="form-group">
+      <label>密碼</label>
+      <input type="password" name="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block btn-lg">登入</button>
+  </form>
+
+  <p style="text-align:center;margin-top:1.5rem;color:var(--gray-500)">
+    仲未有帳戶？ <a href="/auth/register">立即註冊</a>
+  </p>
+</div>
+
+<%- include('../partials/footer') %>

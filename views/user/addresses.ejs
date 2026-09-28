@@ -1,0 +1,74 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <h1 style="margin:2rem 0">📍 我的地址</h1>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem" class="address-grid">
+    <div>
+      <% if (addresses.length === 0) { %>
+        <div style="background:white;padding:2rem;border-radius:var(--radius);text-align:center;color:var(--gray-500)">
+          尚未新增地址
+        </div>
+      <% } else { %>
+        <% addresses.forEach(addr => { %>
+          <div style="background:white;padding:1.25rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:1rem">
+            <% if (addr.is_default) { %>
+              <span class="tag" style="background:var(--bear-yellow)">預設地址</span>
+            <% } %>
+            <div style="font-weight:600;margin:0.5rem 0"><%= addr.recipient %> <%= addr.phone %></div>
+            <div style="color:var(--gray-500);font-size:0.875rem"><%= addr.district %> - <%= addr.address %></div>
+            <form action="/user/addresses/<%= addr.id %>/delete" method="post" style="margin-top:0.5rem">
+              <button type="submit" style="color:var(--bear-red);font-size:0.875rem">🗑️ 刪除</button>
+            </form>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <div style="background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm)">
+      <h3 style="margin-bottom:1rem">+ 新增地址</h3>
+      <form action="/user/addresses" method="post">
+        <div class="form-group">
+          <label>標籤 (例如：公司、家居)</label>
+          <input type="text" name="label" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>收件人 *</label>
+          <input type="text" name="recipient" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>電話 *</label>
+          <input type="tel" name="phone" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>地區 *</label>
+          <select name="district" class="form-control" required>
+            <option value="">請選擇</option>
+            <option>香港島</option>
+            <option>九龍</option>
+            <option>新界</option>
+            <option>離島</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>詳細地址 *</label>
+          <textarea name="address" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:0.5rem">
+            <input type="checkbox" name="is_default" value="1"> 設為預設地址
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">新增地址</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+@media (max-width:768px) {
+  .address-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+
+<%- include('../partials/footer') %>

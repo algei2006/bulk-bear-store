@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="max-width:600px">
+  <h1 style="margin:2rem 0">👤 個人資料</h1>
+
+  <div style="background:white;padding:2rem;border-radius:var(--radius);box-shadow:var(--shadow-sm)">
+    <form action="/user/profile" method="post">
+      <div class="form-group">
+        <label>電郵</label>
+        <input type="email" value="<%= user.email %>" class="form-control" disabled>
+      </div>
+      <div class="form-group">
+        <label>姓名 *</label>
+        <input type="text" name="name" value="<%= user.name %>" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>電話</label>
+        <input type="tel" name="phone" value="<%= user.phone || '' %>" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>註冊日期</label>
+        <input type="text" value="<%= new Date(user.created_at).toLocaleDateString('zh-HK') %>" class="form-control" disabled>
+      </div>
+      <button type="submit" class="btn btn-primary">儲存</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

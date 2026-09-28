@@ -1,0 +1,96 @@
+<%- include('../partials/header') %>
+
+<section class="hero">
+  <div class="container">
+    <h1>
+      <span class="red">批發</span><span class="blue">熊</span> 🐻
+    </h1>
+    <p>香港最抵嘅網上批發平台！日用品、包裝、文具、家居⋯⋯全部以批發價發售，入貨越多越平。</p>
+    <a href="/products" class="hero-cta">🛒 即刻去掃貨</a>
+    <p style="margin-top:1.5rem;font-size:0.9rem">
+      🎁 <strong>推薦獎賞：</strong>推薦朋友賺 5% 購物回贈！
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">📚 所有分類</h2>
+    </div>
+    <div class="categories-grid">
+      <% const categoryEmojis = ['📦', '✏️', '🏠', '🧴', '🥤', '🧻', '🎉', '🛠️']; %>
+      <% categories.forEach((cat, i) => { %>
+        <a href="/products?category=<%= cat.slug %>" class="category-card">
+          <span class="emoji"><%= categoryEmojis[i % categoryEmojis.length] %></span>
+          <div class="name"><%= cat.name %></div>
+        </a>
+      <% }) %>
+      <% if (categories.length === 0) { %>
+        <div style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--gray-500)">
+          分類載入中⋯⋯請稍後再回來 🐻
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--gray-50)">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">⭐ 精選產品</h2>
+      <a href="/products" class="section-link">查看全部 →</a>
+    </div>
+    <div class="product-grid">
+      <% featured.forEach(product => { %>
+        <a href="/products/<%= product.slug %>" class="product-card">
+          <div class="image">📦</div>
+          <div class="info">
+            <div class="name"><%= product.name %></div>
+            <div class="price-row">
+              <span class="price"><%= store.currency %><%= product.price.toFixed(2) %></span>
+              <% if (product.wholesale_price) { %>
+                <span class="price-old"><%= store.currency %><%= product.wholesale_price.toFixed(2) %></span>
+              <% } %>
+            </div>
+            <% if (product.wholesale_price) { %>
+              <span class="tag bulk">批發 <%= store.currency %><%= product.wholesale_price.toFixed(2) %> 起</span>
+            <% } %>
+          </div>
+        </a>
+      <% }) %>
+      <% if (featured.length === 0) { %>
+        <div style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--gray-500)">
+          精選產品載入中⋯⋯
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="text-align:center">
+    <h2 class="section-title">🐻 點解揀批發熊？</h2>
+    <div class="categories-grid" style="margin-top:2rem">
+      <div class="category-card">
+        <span class="emoji">💰</span>
+        <div class="name">批發價最抵</div>
+      </div>
+      <div class="category-card">
+        <span class="emoji">🚚</span>
+        <div class="name">免費送貨*</div>
+      </div>
+      <div class="category-card">
+        <span class="emoji">🎁</span>
+        <div class="name">推薦賺回贈</div>
+      </div>
+      <div class="category-card">
+        <span class="emoji">⚡</span>
+        <div class="name">即日出貨</div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;color:var(--gray-500);font-size:0.875rem">* 指定地區及訂單滿額適用</p>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

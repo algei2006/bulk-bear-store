@@ -1,0 +1,82 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="max-width:800px">
+  <h1 style="margin:2rem 0">🎁 推薦獎賞</h1>
+
+  <div style="background:linear-gradient(135deg,var(--bear-red),var(--bear-pink));color:white;padding:2rem;border-radius:var(--radius-lg);text-align:center;margin-bottom:2rem">
+    <div style="font-size:3rem">🐻🎁</div>
+    <h2 style="margin:0.5rem 0">推薦朋友，賺 5% 回贈！</h2>
+    <p style="opacity:0.9">每個朋友首次落單，您即可賺取訂單金額 5% 作為購物回贈</p>
+  </div>
+
+  <div style="background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:2rem">
+    <h3>🔗 您嘅專屬推薦連結</h3>
+    <div style="display:flex;gap:0.5rem;margin-top:1rem">
+      <input type="text" value="<%= referralLink %>" class="form-control" id="refLink" readonly>
+      <button class="btn btn-primary" onclick="copyLink()">📋 複製</button>
+    </div>
+    <p style="margin-top:1rem;font-size:0.875rem;color:var(--gray-500)">
+      或者分享您嘅推薦碼：<strong style="font-size:1.25rem;color:var(--bear-red);letter-spacing:2px"><%= user.referral_code %></strong>
+    </p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card blue">
+      <div class="label">總推薦人數</div>
+      <div class="value"><%= referrals.length %></div>
+    </div>
+    <div class="stat-card green">
+      <div class="label">總賺取獎賞</div>
+      <div class="value"><%= store.currency %><%= totalEarnings.toFixed(2) %></div>
+    </div>
+  </div>
+
+  <div style="background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-top:2rem">
+    <h3 style="margin-bottom:1rem">📋 推薦記錄</h3>
+    <% if (referrals.length === 0) { %>
+      <div style="text-align:center;padding:2rem;color:var(--gray-500)">
+        暫時未有推薦記錄，分享您嘅連結賺獎賞！
+      </div>
+    <% } else { %>
+      <table class="table">
+        <thead>
+          <tr><th>被推薦人</th><th>訂單</th><th>獎賞</th><th>日期</th></tr>
+        </thead>
+        <tbody>
+          <% referrals.forEach(r => { %>
+            <tr>
+              <td><%= r.referee_name %></td>
+              <td><%= r.order_no || '-' %></td>
+              <td style="color:var(--bear-green);font-weight:700"><%= store.currency %><%= r.reward.toFixed(2) %></td>
+              <td><%= new Date(r.created_at).toLocaleDateString('zh-HK') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+
+  <div style="margin-top:2rem;padding:1.5rem;background:var(--bear-cream);border-radius:var(--radius)">
+    <h3 style="margin-bottom:0.5rem">💡 點樣賺最多？</h3>
+    <ul style="padding-left:1.5rem;line-height:1.8">
+      <li>將您嘅連結分享到 WhatsApp、Facebook、Instagram</li>
+      <li>朋友用您嘅連結註冊並首次落單，您即可賺 5% 回贈</li>
+      <li>獎賞會自動存入您嘅帳戶，下次購物可使用</li>
+      <li>推薦越多朋友，賺越多！</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function copyLink() {
+  const input = document.getElementById('refLink');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = event.target;
+    btn.textContent = '✅ 已複製';
+    setTimeout(() => btn.textContent = '📋 複製', 2000);
+  });
+}
+</script>
+
+<%- include('../partials/footer') %>

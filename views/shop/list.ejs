@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <h1 style="margin:2rem 0 1rem;font-size:1.75rem">
+    🛍️ <%= q ? '搜尋：「'+q+'」' : '所有產品' %>
+    <span style="font-size:0.875rem;color:var(--gray-500);font-weight:400">
+      共 <%= pagination.total %> 件產品
+    </span>
+  </h1>
+
+  <% if (categories.length > 0) { %>
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem">
+      <a href="/products" class="btn <%= !category ? 'btn-primary' : 'btn-outline' %>" style="padding:0.375rem 0.875rem;font-size:0.875rem">全部</a>
+      <% categories.forEach(cat => { %>
+        <a href="/products?category=<%= cat.slug %>" class="btn <%= category === cat.slug ? 'btn-primary' : 'btn-outline' %>" style="padding:0.375rem 0.875rem;font-size:0.875rem">
+          <%= cat.name %>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if (products.length === 0) { %>
+    <div style="text-align:center;padding:4rem 1rem;color:var(--gray-500)">
+      <div style="font-size:4rem;margin-bottom:1rem">🐻</div>
+      <p>暫時冇產品</p>
+      <a href="/products" class="btn btn-primary" style="margin-top:1rem">查看所有產品</a>
+    </div>
+  <% } else { %>
+    <div class="product-grid">
+      <% products.forEach(product => { %>
+        <a href="/products/<%= product.slug %>" class="product-card">
+          <div class="image">📦</div>
+          <div class="info">
+            <div class="name"><%= product.name %></div>
+            <div class="price-row">
+              <span class="price"><%= store.currency %><%= product.price.toFixed(2) %></span>
+            </div>
+            <% if (product.wholesale_price && product.wholesale_price < product.price) { %>
+              <span class="tag bulk">批發 <%= store.currency %><%= product.wholesale_price.toFixed(2) %>+</span>
+            <% } %>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+
+    <% if (pagination.pages > 1) { %>
+      <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:3rem">
+        <% for (let p = 1; p <= pagination.pages; p++) { %>
+          <a href="?<%= new URLSearchParams({...query, page: p}).toString() %>"
+             class="btn <%= p === pagination.page ? 'btn-primary' : 'btn-outline' %>"
+             style="min-width:40px"><%= p %></a>
+        <% } %>
+      </div>
+    <% } %>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

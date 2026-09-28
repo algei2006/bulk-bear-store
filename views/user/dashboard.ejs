@@ -1,0 +1,90 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <h1 style="margin:2rem 0 1rem">👤 我的帳戶</h1>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">總訂單</div>
+      <div class="value"><%= stats.totalOrders %></div>
+    </div>
+    <div class="stat-card red">
+      <div class="label">消費總額</div>
+      <div class="value"><%= store.currency %><%= stats.totalSpent.toFixed(0) %></div>
+    </div>
+    <div class="stat-card blue">
+      <div class="label">進行中訂單</div>
+      <div class="value"><%= stats.pendingOrders %></div>
+    </div>
+    <div class="stat-card green">
+      <div class="label">推薦獎賞</div>
+      <div class="value"><%= store.currency %><%= stats.referralEarnings.toFixed(0) %></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem" class="dashboard-grid">
+    <div>
+      <div style="background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h3>📦 最近訂單</h3>
+          <a href="/user/orders" class="section-link">查看全部 →</a>
+        </div>
+        <% if (orders.length === 0) { %>
+          <div style="text-align:center;padding:2rem;color:var(--gray-500)">
+            暫時未有訂單 <a href="/products">去購物</a>
+          </div>
+        <% } else { %>
+          <% orders.forEach(order => { %>
+            <a href="/user/orders/<%= order.id %>" style="display:flex;justify-content:space-between;align-items:center;padding:0.875rem 0;border-bottom:1px solid var(--gray-200)">
+              <div>
+                <div style="font-weight:600"><%= order.order_no %></div>
+                <div style="font-size:0.875rem;color:var(--gray-500)">
+                  <%= new Date(order.created_at).toLocaleDateString('zh-HK') %>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <span class="status status-<%= order.status %>"><%= order.status %></span>
+                <div style="font-weight:700;color:var(--bear-red);margin-top:0.25rem">
+                  <%= store.currency %><%= order.total.toFixed(2) %>
+                </div>
+              </div>
+            </a>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+
+    <div>
+      <div style="background:var(--bear-cream);padding:1.5rem;border-radius:var(--radius);margin-bottom:1rem">
+        <h3 style="margin-bottom:1rem;color:var(--bear-red)">🎁 推薦獎賞</h3>
+        <p style="font-size:0.875rem;margin-bottom:1rem">
+          分享您嘅專屬連結，每個朋友首次落單您賺 5% 回贈！
+        </p>
+        <div style="background:white;padding:0.75rem;border-radius:8px;font-size:0.75rem;word-break:break-all;margin-bottom:1rem">
+          <%= referralLink %>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="navigator.clipboard.writeText('<%= referralLink %>');this.textContent='✅ 已複製'">
+          📋 複製連結
+        </button>
+        <a href="/user/referral" class="btn btn-outline btn-block" style="margin-top:0.5rem">
+          查看推薦詳情 →
+        </a>
+      </div>
+
+      <div style="background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm)">
+        <h3 style="margin-bottom:1rem">⚙️ 快速連結</h3>
+        <a href="/user/profile" class="btn btn-outline btn-block" style="margin-bottom:0.5rem">👤 個人資料</a>
+        <a href="/user/addresses" class="btn btn-outline btn-block" style="margin-bottom:0.5rem">📍 送貨地址</a>
+        <a href="/user/orders" class="btn btn-outline btn-block">📦 訂單記錄</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@media (max-width:768px) {
+  .dashboard-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+
+<%- include('../partials/footer') %>

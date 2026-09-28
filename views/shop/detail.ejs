@@ -1,0 +1,93 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div style="margin:1rem 0;font-size:0.875rem;color:var(--gray-500)">
+    <a href="/">首頁</a> /
+    <% if (product.category_name) { %>
+      <a href="/products?category=<%= product.category_slug %>"><%= product.category_name %></a> /
+    <% } %>
+    <%= product.name %>
+  </div>
+
+  <div class="product-detail">
+    <div class="image-main">📦</div>
+
+    <div>
+      <h1><%= product.name %></h1>
+      <div class="sku">SKU: <%= product.sku %></div>
+
+      <div class="price-row" style="margin-bottom:1rem">
+        <span style="font-size:2rem;font-weight:800;color:var(--bear-red)">
+          <%= store.currency %><%= product.price.toFixed(2) %>
+        </span>
+        <span style="color:var(--gray-500)">/ 單位</span>
+      </div>
+
+      <% if (tiers.length > 1) { %>
+        <div class="price-tiers">
+          <h3>📊 階梯式批發價</h3>
+          <% tiers.forEach(tier => { %>
+            <div class="price-tier">
+              <span class="qty"><%= tier.label %></span>
+              <span class="price"><%= store.currency %><%= tier.price.toFixed(2) %></span>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <% if (product.description) { %>
+        <div style="margin-bottom:1.5rem;line-height:1.7">
+          <%= product.description %>
+        </div>
+      <% } %>
+
+      <% if (product.stock > 0) { %>
+        <form action="/cart/add" method="post" style="display:flex;gap:1rem;align-items:center">
+          <input type="hidden" name="product_id" value="<%= product.id %>">
+          <div class="qty-input">
+            <button type="button" onclick="qtyChange(-1)">−</button>
+            <input type="number" name="qty" id="qtyInput" value="<%= product.min_wholesale_qty || 1 %>" min="1" max="<%= product.stock %>">
+            <button type="button" onclick="qtyChange(1)">+</button>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="flex:1">
+            🛒 加入購物車
+          </button>
+        </form>
+        <p style="margin-top:0.75rem;color:var(--gray-500);font-size:0.875rem">
+          ✓ 庫存 <%= product.stock %> 件 | 🚚 24小時內出貨
+        </p>
+      <% } else { %>
+        <div class="alert alert-error">暫時缺貨</div>
+      <% } %>
+    </div>
+  </div>
+
+  <% if (related.length > 0) { %>
+    <section class="section">
+      <h2 class="section-title" style="margin-bottom:1.5rem">相關產品</h2>
+      <div class="product-grid">
+        <% related.forEach(p => { %>
+          <a href="/products/<%= p.slug %>" class="product-card">
+            <div class="image">📦</div>
+            <div class="info">
+              <div class="name"><%= p.name %></div>
+              <div class="price-row">
+                <span class="price"><%= store.currency %><%= p.price.toFixed(2) %></span>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+</div>
+
+<script>
+function qtyChange(delta) {
+  const input = document.getElementById('qtyInput');
+  const newVal = Math.max(1, Math.min(parseInt(input.max) || 9999, (parseInt(input.value) || 1) + delta));
+  input.value = newVal;
+}
+</script>
+
+<%- include('../partials/footer') %>

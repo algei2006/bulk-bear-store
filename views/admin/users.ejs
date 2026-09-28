@@ -1,0 +1,23 @@
+<%- include('layout') %>
+
+<h1 style="margin-bottom:1.5rem">👥 會員管理</h1>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>會員</th><th>聯絡</th><th>推薦碼</th><th>訂單數</th><th>消費總額</th><th>註冊日期</th></tr></thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><strong><%= u.name %></strong><br><span style="font-size:0.75rem;color:var(--gray-500)"><%= u.email %></span></td>
+          <td><%= u.phone || '-' %></td>
+          <td><code><%= u.referral_code %></code></td>
+          <td><%= u.order_count %></td>
+          <td><%= store.currency %><%= u.total_spent.toFixed(2) %></td>
+          <td><%= new Date(u.created_at).toLocaleDateString('zh-HK') %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+</main></div></body></html>

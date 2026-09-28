@@ -1,0 +1,77 @@
+</main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <a href="/" class="<%= path === '/' ? 'active' : '' %>">
+      <span style="font-size:1.5rem">🏠</span>
+      <span>首頁</span>
+    </a>
+    <a href="/products" class="<%= path === '/products' ? 'active' : '' %>">
+      <span style="font-size:1.5rem">🛍️</span>
+      <span>產品</span>
+    </a>
+    <a href="/cart" class="<%= path.startsWith('/cart') ? 'active' : '' %>">
+      <span style="font-size:1.5rem">🛒</span>
+      <span>購物車</span>
+      <% if (cartCount > 0) { %><span class="badge"><%= cartCount %></span><% } %>
+    </a>
+    <a href="/user" class="<%= path.startsWith('/user') ? 'active' : '' %>">
+      <span style="font-size:1.5rem">👤</span>
+      <span>帳戶</span>
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>🐻 <%= store.name %></h4>
+          <p style="color:rgba(255,255,255,0.7);font-size:0.9rem">
+            <%= store.tagline %><br>
+            為您搜羅全城最抵嘅批發好物！
+          </p>
+        </div>
+        <div>
+          <h4>購物指南</h4>
+          <a href="/products">所有產品</a>
+          <a href="/about">關於我們</a>
+          <a href="/user/referral">推薦獎賞</a>
+        </div>
+        <div>
+          <h4>客戶服務</h4>
+          <a href="/user/orders">訂單查詢</a>
+          <a href="/user/addresses">送貨地址</a>
+          <a href="/auth/login">會員登入</a>
+        </div>
+        <div>
+          <h4>聯絡我們</h4>
+          <a href="mailto:hello@bulk-bear.com">📧 hello@bulk-bear.com</a>
+          <a href="tel:+85212345678">📞 (852) 1234-5678</a>
+          <a href="#">📍 香港九龍觀塘</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © <%= new Date().getFullYear() %> <%= store.name %>. All rights reserved. 🐻
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    // Auto-hide flash messages
+    setTimeout(() => {
+      document.querySelectorAll('.flash').forEach(f => {
+        f.style.transition = 'opacity 0.3s';
+        f.style.opacity = '0';
+        setTimeout(() => f.remove(), 300);
+      });
+    }, 4000);
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

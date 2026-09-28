@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+
+<div class="auth-page">
+  <img src="/images/logo.jpg" alt="批發熊" style="width:80px;height:80px;border-radius:50%;margin:0 auto 1rem;display:block">
+  <h1>🐻 加入批發熊</h1>
+  <p style="text-align:center;color:var(--gray-500);margin-bottom:1.5rem">註冊即享迎新優惠 + 推薦獎賞！</p>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
+
+  <form action="/auth/register" method="post">
+    <div class="form-group">
+      <label>姓名 *</label>
+      <input type="text" name="name" class="form-control" required value="<%= typeof form !== 'undefined' && form && form.name ? form.name : '' %>">
+    </div>
+    <div class="form-group">
+      <label>電郵 *</label>
+      <input type="email" name="email" class="form-control" required value="<%= typeof form !== 'undefined' && form && form.email ? form.email : '' %>">
+    </div>
+    <div class="form-group">
+      <label>電話</label>
+      <input type="tel" name="phone" class="form-control" value="<%= typeof form !== 'undefined' && form && form.phone ? form.phone : '' %>">
+    </div>
+    <div class="form-group">
+      <label>密碼 * (最少 6 位)</label>
+      <input type="password" name="password" class="form-control" required minlength="6">
+    </div>
+    <% if (referralCode) { %>
+      <div class="form-group">
+        <label>🎁 推薦碼</label>
+        <input type="text" name="referralCode" class="form-control" value="<%= referralCode %>" readonly style="background:var(--bear-cream)">
+      </div>
+    <% } %>
+    <button type="submit" class="btn btn-primary btn-block btn-lg">立即註冊</button>
+  </form>
+
+  <p style="text-align:center;margin-top:1.5rem;color:var(--gray-500)">
+    已經有帳戶？ <a href="/auth/login">立即登入</a>
+  </p>
+</div>
+
+<%- include('../partials/footer') %>

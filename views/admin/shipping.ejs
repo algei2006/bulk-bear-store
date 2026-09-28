@@ -1,0 +1,54 @@
+<%- include('layout') %>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+  <h1>🚚 送貨設定</h1>
+  <button onclick="document.getElementById('newZone').style.display='block'" class="btn btn-primary">+ 新增送貨區域</button>
+</div>
+
+<div id="newZone" style="display:none;background:white;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:1.5rem">
+  <h3>新增送貨區域</h3>
+  <form action="/admin/shipping" method="post" style="margin-top:1rem">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+      <input type="text" name="name" placeholder="區域名稱 (例：香港島)" class="form-control" required>
+      <input type="text" name="estimated_days" placeholder="預計送貨日數 (例：1-2 天)" class="form-control">
+      <input type="number" step="0.01" name="fee" placeholder="運費" class="form-control" required>
+      <input type="number" step="0.01" name="free_threshold" placeholder="免運費門檻 (0 = 無)" class="form-control" value="0">
+    </div>
+    <p style="margin:0.5rem 0;font-size:0.875rem;color:var(--gray-500)">
+      適用地區（按住 Ctrl 多選）：
+    </p>
+    <select name="districts" multiple class="form-control" required style="height:120px">
+      <option value="香港島">香港島</option>
+      <option value="九龍">九龍</option>
+      <option value="新界">新界</option>
+      <option value="離島">離島</option>
+      <option value="澳門">澳門</option>
+    </select>
+    <button type="submit" class="btn btn-primary" style="margin-top:0.75rem">新增</button>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>區域名稱</th><th>覆蓋地區</th><th>運費</th><th>免運門檻</th><th>預計天數</th><th>狀態</th><th></th></tr></thead>
+    <tbody>
+      <% zones.forEach(z => { %>
+        <tr>
+          <td><strong><%= z.name %></strong></td>
+          <td><%= z.districts %></td>
+          <td><%= store.currency %><%= z.fee.toFixed(2) %></td>
+          <td><%= z.free_threshold > 0 ? store.currency + z.free_threshold.toFixed(2) : '無' %></td>
+          <td><%= z.estimated_days || '-' %></td>
+          <td><span class="status status-<%= z.active ? 'completed' : 'cancelled' %>"><%= z.active ? '啟用' : '停用' %></span></td>
+          <td>
+            <form action="/admin/shipping/<%= z.id %>/delete" method="post" onsubmit="return confirm('刪除？')">
+              <button class="btn btn-outline" style="padding:0.25rem 0.5rem;font-size:0.75rem;color:var(--bear-red)">刪除</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+</main></div></body></html>

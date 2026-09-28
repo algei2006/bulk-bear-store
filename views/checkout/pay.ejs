@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div style="max-width:500px;margin:3rem auto;text-align:center">
+    <div style="font-size:5rem">💳</div>
+    <h1 style="margin:1rem 0">付款</h1>
+    <p style="color:var(--gray-700);margin-bottom:2rem">
+      訂單編號：<strong><%= order.order_no %></strong><br>
+      應付金額：<strong style="color:var(--bear-red);font-size:1.5rem"><%= store.currency %><%= order.total.toFixed(2) %></strong>
+    </p>
+
+    <% if (order.payment_method === 'bank') { %>
+      <div style="background:white;padding:2rem;border-radius:var(--radius);box-shadow:var(--shadow);text-align:left;margin-bottom:1.5rem">
+        <h3 style="margin-bottom:1rem">🏦 銀行轉帳資料</h3>
+        <p>銀行：<strong>匯豐銀行 HSBC</strong></p>
+        <p>戶口名稱：<strong>Bulk Bear Wholesale Ltd</strong></p>
+        <p>戶口號碼：<strong>123-456789-001</strong></p>
+        <p>FPS ID：<strong>1234567</strong></p>
+        <hr style="margin:1rem 0">
+        <p style="font-size:0.875rem;color:var(--gray-500)">
+          完成轉帳後請將入數紙 WhatsApp 給我們並註明訂單編號
+        </p>
+      </div>
+    <% } %>
+
+    <form action="/checkout/pay/<%= order.id %>" method="post">
+      <button type="submit" class="btn btn-primary btn-lg btn-block">
+        ✓ 確認已付款 (示範)
+      </button>
+    </form>
+    <p style="margin-top:1rem;color:var(--gray-500);font-size:0.875rem">
+      提示：實際使用時會接駁 Stripe 信用卡付款
+    </p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

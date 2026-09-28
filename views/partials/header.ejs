@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#E63946">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="批發熊">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <title><%= typeof title !== 'undefined' ? title : store.name %></title>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <span>🐻 <%= store.tagline %></span>
+      <span>
+        <% if (user && user.role === 'admin') { %>
+          <a href="/admin">後台</a> ·
+          <a href="/user"><%= user.name %></a> ·
+          <a href="/auth/logout">登出</a>
+        <% } else if (user) { %>
+          <a href="/user">我的帳戶</a> · <a href="/auth/logout">登出</a>
+        <% } else { %>
+          <a href="/auth/login">登入</a> · <a href="/auth/register">註冊</a>
+        <% } %>
+      </span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <img src="/images/logo.jpg" alt="批發熊" class="logo-img">
+        <div class="logo-text">
+          <span class="logo-zh">批發熊</span>
+          <span class="logo-en">Bulk Bear</span>
+        </div>
+      </a>
+
+      <form class="search" action="/products" method="get">
+        <input type="search" name="q" placeholder="搜尋產品，例如：紙杯、文具..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+      </form>
+
+      <div class="header-actions">
+        <a href="/user/referral" class="header-btn" title="推薦獎賞">
+          🎁
+          <span class="label">推薦</span>
+        </a>
+        <a href="/user" class="header-btn" title="帳戶">
+          👤
+          <span class="label">帳戶</span>
+        </a>
+        <a href="/cart" class="header-btn" title="購物車">
+          🛒
+          <% if (cartCount && cartCount > 0) { %><span class="badge"><%= cartCount %></span><% } %>
+          <span class="label">購物車</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="/" class="<%= path === '/' ? 'active' : '' %>">🏠 首頁</a>
+        <a href="/products" class="<%= path === '/products' ? 'active' : '' %>">🛍️ 所有產品</a>
+        <a href="/products?category=packaging">📦 包裝用品</a>
+        <a href="/products?category=stationery">✏️ 文具</a>
+        <a href="/products?category=household">🏠 家居</a>
+        <a href="/about">ℹ️ 關於我們</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Flash Messages -->
+  <% if (flash) { %>
+    <div class="flash-container">
+      <div class="flash alert-<%= flash.type %>"><%= flash.message %></div>
+    </div>
+  <% } %>
+
+  <main>

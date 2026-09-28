@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div style="margin:2rem 0 1rem;font-size:0.875rem;color:var(--gray-500)">
+    <a href="/user/orders">我的訂單</a> / <%= order.order_no %>
+  </div>
+
+  <div class="checkout-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="margin:0">訂單 <%= order.order_no %></h1>
+        <div style="color:var(--gray-500);margin-top:0.5rem">
+          <%= new Date(order.created_at).toLocaleString('zh-HK') %>
+        </div>
+      </div>
+      <span class="status status-<%= order.status %>" style="font-size:1rem;padding:0.5rem 1rem"><%= order.status %></span>
+    </div>
+
+    <% if (order.tracking_no) { %>
+      <div style="margin-top:1rem;padding:1rem;background:var(--bear-cream);border-radius:var(--radius)">
+        🚚 運單編號：<strong><%= order.tracking_no %></strong>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="checkout-section">
+    <h3>📍 送貨地址</h3>
+    <% const addr = JSON.parse(order.address_snapshot || '{}') %>
+    <p>
+      <%= addr.recipient %> <%= addr.phone %><br>
+      <%= addr.district %> - <%= addr.address %>
+    </p>
+  </div>
+
+  <div class="checkout-section">
+    <h3>🛒 訂單產品</h3>
+    <% items.forEach(item => { %>
+      <% const snap = JSON.parse(item.product_snapshot || '{}') %>
+      <div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--gray-200)">
+        <span><%= snap.name || '產品' %> × <%= item.qty %></span>
+        <span><%= store.currency %><%= item.subtotal.toFixed(2) %></span>
+      </div>
+    <% }) %>
+  </div>
+
+  <div class="cart-summary" style="max-width:400px;margin-left:auto">
+    <div class="row"><span>小計</span><span><%= store.currency %><%= order.subtotal.toFixed(2) %></span></div>
+    <% if (order.discount > 0) { %>
+      <div class="row" style="color:var(--bear-green)"><span>優惠</span><span>- <%= store.currency %><%= order.discount.toFixed(2) %></span></div>
+    <% } %>
+    <div class="row"><span>運費</span><span><%= store.currency %><%= order.shipping_fee.toFixed(2) %></span></div>
+    <div class="row total"><span>總額</span><span><%= store.currency %><%= order.total.toFixed(2) %></span></div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

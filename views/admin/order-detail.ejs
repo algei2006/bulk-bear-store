@@ -1,0 +1,96 @@
+<%- include('layout') %>
+
+<div style="margin:1rem 0;font-size:0.875rem;color:var(--gray-500)">
+  <a href="/admin/orders">訂單管理</a> / <%= order.order_no %>
+</div>
+
+<div class="checkout-section">
+  <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1rem">
+    <div>
+      <h1 style="margin:0"><%= order.order_no %></h1>
+      <div style="color:var(--gray-500);margin-top:0.5rem">
+        <%= new Date(order.created_at).toLocaleString('zh-HK') %>
+      </div>
+      <div style="margin-top:0.5rem">
+        👤 <%= order.user_name %> · 📧 <%= order.email %> · 📞 <%= order.phone || 'N/A' %>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <span class="status status-<%= order.status %>" style="font-size:1rem;padding:0.5rem 1rem"><%= order.status %></span>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem">
+  <div>
+    <div class="checkout-section">
+      <h3>🛒 訂單產品</h3>
+      <% items.forEach(item => { %>
+        <% const snap = JSON.parse(item.product_snapshot || '{}') %>
+        <div style="display:flex;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid var(--gray-200)">
+          <div>
+            <strong><%= snap.name || '產品' %></strong>
+            <div style="font-size:0.875rem;color:var(--gray-500)"><%= snap.sku || '' %></div>
+          </div>
+          <div style="text-align:right">
+            <%= store.currency %><%= item.unit_price.toFixed(2) %> × <%= item.qty %>
+            <div style="font-weight:700"><%= store.currency %><%= item.subtotal.toFixed(2) %></div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="checkout-section">
+      <h3>📍 送貨地址</h3>
+      <% const addr = JSON.parse(order.address_snapshot || '{}') %>
+      <p>
+        <%= addr.recipient || '' %> <%= addr.phone || '' %><br>
+        <%= addr.district || '' %> - <%= addr.address || '' %>
+      </p>
+    </div>
+
+    <% if (order.notes) { %>
+      <div class="checkout-section">
+        <h3>📝 客戶備註</h3>
+        <p><%= order.notes %></p>
+      </div>
+    <% } %>
+  </div>
+
+  <div>
+    <div class="checkout-section">
+      <h3>💰 金額</h3>
+      <div style="display:flex;justify-content:space-between;padding:0.25rem 0"><span>小計</span><span><%= store.currency %><%= order.subtotal.toFixed(2) %></span></div>
+      <% if (order.discount > 0) { %>
+        <div style="display:flex;justify-content:space-between;padding:0.25rem 0;color:var(--bear-green)"><span>優惠</span><span>-<%= store.currency %><%= order.discount.toFixed(2) %></span></div>
+      <% } %>
+      <div style="display:flex;justify-content:space-between;padding:0.25rem 0"><span>運費</span><span><%= store.currency %><%= order.shipping_fee.toFixed(2) %></span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-top:1px solid var(--gray-200);margin-top:0.5rem;font-weight:800;font-size:1.25rem">
+        <span>總額</span><span style="color:var(--bear-red)"><%= store.currency %><%= order.total.toFixed(2) %></span>
+      </div>
+    </div>
+
+    <div class="checkout-section">
+      <h3>⚙️ 狀態管理</h3>
+      <form action="/admin/orders/<%= order.id %>/status" method="post">
+        <div class="form-group">
+          <label>訂單狀態</label>
+          <select name="status" class="form-control">
+            <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>待處理</option>
+            <option value="paid" <%= order.status === 'paid' ? 'selected' : '' %>>已付款</option>
+            <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>已出貨</option>
+            <option value="completed" <%= order.status === 'completed' ? 'selected' : '' %>>已完成</option>
+            <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>已取消</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>運單編號</label>
+          <input type="text" name="tracking_no" class="form-control" value="<%= order.tracking_no || '' %>" placeholder="例如：SF1234567890">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">更新狀態</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+</main></div></body></html>

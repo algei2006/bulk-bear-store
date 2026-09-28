@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <title>管理員登入 - 批發熊</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { background: var(--gray-900); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .login-box { background: white; padding: 2.5rem; border-radius: var(--radius-lg); max-width: 400px; width: 100%; box-shadow: var(--shadow-xl); }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:2rem">
+      <img src="/images/logo.jpg" alt="批發熊" style="width:80px;height:80px;border-radius:50%;margin:0 auto">
+      <h1 style="margin:1rem 0 0.5rem">後台管理</h1>
+      <p style="color:var(--gray-500)">批發熊 Bulk Bear Admin</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <form action="/admin/login" method="post">
+      <div class="form-group">
+        <label>電郵</label>
+        <input type="email" name="email" class="form-control" required autofocus>
+      </div>
+      <div class="form-group">
+        <label>密碼</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">登入後台</button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem">
+      <a href="/" style="color:var(--gray-500)">← 返回前台</a>
+    </p>
+  </div>
+</body>
+</html>
